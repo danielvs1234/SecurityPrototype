@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.Array;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Track implements Serializable {
@@ -40,6 +41,12 @@ public class Track implements Serializable {
         Gson gson = new Gson();
         String json = gson.toJson(this);
         return json;
+    }
+
+    public String getDateAndTime(){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YY;HH:mm");
+        String dateString = formatter.format(this.timestamp);
+        return dateString;
     }
 
 
