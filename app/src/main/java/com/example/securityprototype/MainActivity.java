@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,11 +18,13 @@ import java.io.FileOutputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +40,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String pass = "c89SF3ff34J999";
 
     private Button button;
     private Button decryptButton;
+    private Button deleteButton;
     private TextView textView;
     private EditText inputField;
+    private IStorage storageHandler;
+    private IEncryption encryptionHandler;
+    private TrackController trackController;
 
 
     @Override
@@ -52,14 +58,27 @@ public class MainActivity extends AppCompatActivity {
 
         button = findViewById(R.id.saveButton);
         decryptButton =  findViewById(R.id.decryptButton);
+        deleteButton = findViewById(R.id.deleteButton);
         textView = findViewById(R.id.textView1);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         inputField = findViewById(R.id.textField1);
+
+        storageHandler = new StorageHandler(getApplicationContext());
+        encryptionHandler = new EncryptionHandler();
+
+        trackController = new TrackController(getApplicationContext());
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                encryptTextFromFieldAndSaveIt();
-                textView.append("String saved to Storage: " + inputField.getText().toString());
+               // encryptTextFromFieldAndSaveIt();
+
+                trackController.newTrack();
+                trackController.newTrack();
+                trackController.newTrack();
+                trackController.saveTrackArrayToStorage();
+
 
             }
         });
@@ -67,7 +86,18 @@ public class MainActivity extends AppCompatActivity {
         decryptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textView.append(decryptTextFromHashMapAndShowIt().toString());
+              //  decryptTextFromHashMapAndShowIt();
+                ArrayList<Track> tracks = trackController.loadTrackArrayListFromStorage();
+                textView.append( "Track 1: " + "Latlng: " +tracks.get(0).getLatLng());
+                textView.append( "Track 2: " + "Latlng: " +tracks.get(1).getLatLng());
+                textView.append( "Track 3: " + "Latlng: " +tracks.get(2).getLatLng());
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                getApplicationContext().deleteFile("map.dat");
             }
         });
 
@@ -75,119 +105,53 @@ public class MainActivity extends AppCompatActivity {
 
     private void encryptTextFromFieldAndSaveIt(){
         String text = inputField.getText().toString();
-        HashMap<String, byte[]> map = encryptBytes(text.getBytes());
-        saveMapToStorage(map);
+        textView.append("Text without encryption: " + text + "\n");
+
+        if(checkIfFileExists()){
+            StringBuilder stringBuilder = new StringBuilder();
+            String string = new String(encryptionHandler.decryptData((HashMap<String, byte[]>) storageHandler.read("")));
+            stringBuilder.append(string);
+            stringBuilder.append(text);
+
+            HashMap<String, byte[]> map = encryptionHandler.encryptBytes(stringBuilder.toString().getBytes());
+            storageHandler.write(map, "");
+        } else{
+            HashMap<String, byte[]> map = encryptionHandler.encryptBytes(text.getBytes());
+            storageHandler.write(map, "");
+        }
+
+
     }
 
     private byte[] decryptTextFromHashMapAndShowIt(){
-        Map<String, byte[]> map = getMapFromStorage();
-        byte[] decryptedData = decryptData((HashMap) map);
-        return decryptedData;
 
-    }
+        if(checkIfFileExists()) {
 
-    private void saveMapToStorage(Map map){
 
-        try {
-            FileOutputStream fos = openFileOutput("map.dat", Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(map);
-            oos.close();
-        }catch(Exception e){
-            Log.d("Save to Storage", "saveMapToStorage: Method failed ");
-            e.printStackTrace();
-        }
-    }
+            Map<String, byte[]> map = storageHandler.read("");
+           // textView.append("Text before decryption: " + map.toString() + "\n");
 
-    private Map getMapFromStorage(){
+            byte[] decryptedData = encryptionHandler.decryptData((HashMap<String, byte[]>) map);
+            String string = new String(decryptedData);
+            textView.append("Text after decryption: " + string + "\n");
 
-        Map<String, byte[]> map;
-        try {
-            FileInputStream fis = new FileInputStream("map.dat");
-            ObjectInputStream input = new ObjectInputStream(fis);
-            map = (Map<String, byte[]> ) input.readObject();
-            fis.read();
-
-        } catch (Exception e) {
-            Log.d("Get from Storage", "getMapFromStorage: Method failed");
-            e.printStackTrace();
+            return decryptedData;
+        } else{
+            textView.append("File not Found");
             return null;
         }
+    }
 
-        return map;
+    public boolean checkIfFileExists(){
+        File file = getBaseContext().getFileStreamPath("map.dat");
+        return file.exists();
     }
 
 
 
-    private HashMap<String, byte[]> encryptBytes(byte[] plainTextBytes) {
-        HashMap<String, byte[]> map = new HashMap<String, byte[]>();
-
-        try {
-
-            //Create salt
-            SecureRandom random = new SecureRandom();
-            byte salt[] = new byte[256];
-            random.nextBytes(salt);
-
-            //Get key from password
-            char[] passwordChar = pass.toCharArray();
-            PBEKeySpec pbKeySpec = new PBEKeySpec(passwordChar, salt, 1234, 256);
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] keyBytes = secretKeyFactory.generateSecret(pbKeySpec).getEncoded();
-            SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
-
-            //Create IV
-            SecureRandom ivRandom = new SecureRandom();
-            byte[] iv = new byte[16];
-            ivRandom.nextBytes(iv);
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
-
-            //Encrypt
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-            byte[] encrypted = cipher.doFinal(plainTextBytes);
-
-            map.put("salt", salt);
-            map.put("iv", iv);
-            map.put("encrypted", encrypted);
-
-        } catch(Exception e){
-            Log.d("Encrypt", "encryptBytes: Method failed");
-            e.printStackTrace();
-        }
-        return map;
-    }
 
 
 
-    private byte[] decryptData(HashMap<String, byte[]> map)
-    {
-        byte[] decryptedData = null;
 
-        try
-        {
-            byte salt[] = map.get("salt");
-            byte iv[] = map.get("iv");
-            byte encrypted[] = map.get("encrypted");
 
-            //Create key from pass
-            char[] passwordChar = pass.toCharArray();
-            PBEKeySpec pbKeySpec = new PBEKeySpec(passwordChar, salt, 1234, 256);
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] keyBytes = secretKeyFactory.generateSecret(pbKeySpec).getEncoded();
-            SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
-
-            //Decrypt bytes
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
-            IvParameterSpec ivSpec = new IvParameterSpec(iv);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-            decryptedData = cipher.doFinal(encrypted);
-        }
-        catch (Exception e){
-            Log.d("Decrypt", "decryptData: Method Failes");
-            e.printStackTrace();
-        }
-
-        return decryptedData;
-    }
 }
