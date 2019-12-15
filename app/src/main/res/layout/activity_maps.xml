@@ -12,6 +12,11 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="-3dp" />
 
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <Button
         android:id="@+id/backButton"
         android:layout_width="89dp"
@@ -28,5 +33,23 @@
         android:padding="8dp"
         android:text="back"
         android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/dateButton"
+        android:layout_width="89dp"
+        android:layout_height="37dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="130dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="294dp"
+        android:background="#FF9800"
+        android:padding="8dp"
+        android:text="Date"
+        android:textColor="#ffffff" />
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -30,9 +30,21 @@ public class TrackViewController {
 
     }
 
-    public void setMarkersForEachTrack(){
+    public void setMarkersForEachTrack(String optionalDate){
+
+
         ArrayList<Track> trackList = trackController.loadTrackArrayListFromStorage();
-        final ArrayList<Marker> markerList = new ArrayList<>();
+        ArrayList<Marker> markerList = new ArrayList<>();
+        ArrayList<Track> dateTrackList = new ArrayList<>();
+
+        if(optionalDate != null){
+            for (Track track : trackList){
+                if(track.getDate().equals(optionalDate)){
+                    dateTrackList.add(track);
+                }
+            }
+            trackList = dateTrackList;
+        }
 
         for (Track track : trackList){
            Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
@@ -64,6 +76,7 @@ public class TrackViewController {
                 tvLat.setText("Latitude: " + track.getLatLng().latitude);
                 tvLng.setText("Longitude: " + track.getLatLng().longitude);
                 tvDateTime.setText("Date: " + track.getDate() + "\n" + "Time: " + track.getTime());
+                Log.d("date", "getInfoContents: date format = " + track.getDate());
 
                 return v;
 
