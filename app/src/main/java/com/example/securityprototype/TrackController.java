@@ -87,6 +87,7 @@ public class TrackController extends Activity {
                 String[] name = entry.getApplicationName().split(".");
                 track.setApplicationName(name[name.length-1]);
                 tempTrackArrayList.add(track);
+                saveTrackArrayToStorage();
             }
         }catch (SecurityException e){
             e.printStackTrace();

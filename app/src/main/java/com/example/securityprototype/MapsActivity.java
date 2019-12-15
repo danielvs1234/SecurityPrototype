@@ -71,27 +71,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
-        if (!isAccessGranted()) {
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
-    }
-
-    private boolean isAccessGranted() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
-            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-            int mode = 0;
-            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
-                mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                        applicationInfo.uid, applicationInfo.packageName);
-            }
-            return (mode == AppOpsManager.MODE_ALLOWED);
-
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
     }
 
     /**
