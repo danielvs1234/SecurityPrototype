@@ -1,11 +1,15 @@
 package com.example.securityprototype;
 
 import android.Manifest;
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.securityprototype.Model.ActiveApps;
+import com.example.securityprototype.Model.AppModel;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,7 +94,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
         lm = this.getSystemService(LocationManager.class);
-
     }
-
 }

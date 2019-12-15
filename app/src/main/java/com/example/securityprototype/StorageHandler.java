@@ -48,7 +48,7 @@ public class StorageHandler implements IStorage {
 
         Map<String, byte[]> map;
         try {
-            FileInputStream fis = this.context.openFileInput("map.dat");
+            FileInputStream fis = context.openFileInput("map.dat");
             ObjectInputStream input = new ObjectInputStream(fis);
             map = (Map<String, byte[]> ) input.readObject();
             input.close();
@@ -78,10 +78,5 @@ public class StorageHandler implements IStorage {
             Log.d("debugHashMap", "Map: " + string + " Key: "  + pair.getKey() + "  Value: " + pair.getValue() + "\n");
             it.remove(); // avoids a ConcurrentModificationException
         }
-
     }
-
-
-
-
 }

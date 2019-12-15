@@ -79,6 +79,7 @@ public class TrackViewController {
 
                 tvLat.setText("Latitude: " + track.getLatLng().latitude);
                 tvLng.setText("Longitude: " + track.getLatLng().longitude);
+
                 tvDateTime.setText("Date: " + track.getDate() + "\n" + "Time: " + track.getTime());
                 Log.d("date", "getInfoContents: date format = " + track.getDate());
 

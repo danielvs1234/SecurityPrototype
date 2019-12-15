@@ -12,6 +12,7 @@ public class Track implements Serializable {
 
     private LatLng latLng;
     private Timestamp timestamp;
+    private String applicationName;
 
 
     public Track(){
@@ -57,7 +58,13 @@ public class Track implements Serializable {
         return formatter.format(this.timestamp);
     }
 
+    public String getApplicationName(){
+        return applicationName;
+    }
 
+    public void setApplicationName(String applicationName){
+        this.applicationName = applicationName;
+    }
 
 
 }

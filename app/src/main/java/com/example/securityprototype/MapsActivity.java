@@ -89,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      //   mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(berlin));
 
-        lm = getSystemService(LocationManager.class);
+        lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         handleLocationChanged();
 
         trackViewController = new TrackViewController(mMap, getApplicationContext());
@@ -139,6 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onStarted() {
                 Log.d("onStarted", "onStarted: Main nåede hertil ");
+
                 trackViewController.newTrack();
                 super.onStarted();
             }
@@ -154,7 +155,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch(SecurityException e){
             e.printStackTrace();
         }
-
     }
-
 }
