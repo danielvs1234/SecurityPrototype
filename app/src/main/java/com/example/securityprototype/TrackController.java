@@ -1,7 +1,16 @@
 package com.example.securityprototype;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -10,10 +19,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TrackController {
+public class TrackController extends Activity {
 
     private IStorage storageHandler;
     private IEncryption encryptionHandler;
@@ -43,15 +53,31 @@ public class TrackController {
 
     }
 
+    private int MY_PERMISSIONS_FINE_LOCATION = 69;
+
+    public void checkAndRequestPermissions(){
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_FINE_LOCATION);
+        }
+    }
 
     public void newTrack() {
-        Track newTrack = new Track(latLngTestList.get(0));
-        Track newTrack1 = new Track(latLngTestList.get(1));
-        Track newTrack2 = new Track(latLngTestList.get(2));
-        tempTrackArrayList.add(newTrack);
-        tempTrackArrayList.add(newTrack1);
-        tempTrackArrayList.add(newTrack2);
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
+        try {
+            checkAndRequestPermissions();
+            Location lat = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (lat != null) {
+                LatLng tempLatLng = new LatLng(lat.getLatitude(), lat.getLongitude());
+                Log.d("onStarted", "newTrack: Lat" + lat.getLatitude());
+                Track track = new Track(tempLatLng);
+                tempTrackArrayList.add(track);
+            }
+        }catch (SecurityException e){
+            e.printStackTrace();
+        }
     }
 
     public void saveTrackArrayToStorage() {

@@ -1,9 +1,17 @@
 package com.example.securityprototype;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.pm.PackageManager;
+import android.location.GnssStatus;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +35,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Button backButton;
     private Button dateButton;
+    private LocationManager lm;
 
     private TrackViewController trackViewController;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+
     }
 
 
@@ -67,6 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -76,8 +89,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      //   mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(berlin));
 
+        lm = getSystemService(LocationManager.class);
+        handleLocationChanged();
+
         trackViewController = new TrackViewController(mMap, getApplicationContext());
         trackViewController.setMarkersForEachTrack(null);
+
 
     }
 
@@ -100,4 +117,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         trackViewController.setMarkersForEachTrack(date);
     }
+
+
+    private int MY_PERMISSIONS_FINE_LOCATION = 69;
+
+    public void checkAndRequestPermissions(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_FINE_LOCATION);
+        }
+    }
+
+    public void handleLocationChanged() {
+        Log.d("onStarted", "handleLocationChanged: yai ");
+
+
+        //do something with marker here,
+        GnssStatus.Callback gnssListener = new GnssStatus.Callback() {
+
+            @Override
+            public void onStarted() {
+                Log.d("onStarted", "onStarted: Main nåede hertil ");
+                trackViewController.newTrack();
+                super.onStarted();
+            }
+
+            @Override
+            public void onStopped() {
+                super.onStopped();
+            }
+        };
+        try{
+            checkAndRequestPermissions();
+            lm.registerGnssStatusCallback(gnssListener);
+        }catch(SecurityException e){
+            e.printStackTrace();
+        }
+
+    }
+
 }

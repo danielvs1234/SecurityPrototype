@@ -30,6 +30,10 @@ public class TrackViewController {
 
     }
 
+    public void newTrack(){
+        trackController.newTrack();
+    }
+
     public void setMarkersForEachTrack(String optionalDate){
 
 
