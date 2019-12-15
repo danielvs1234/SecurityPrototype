@@ -62,8 +62,8 @@ public class TrackController extends Activity {
 
     private int MY_PERMISSIONS_FINE_LOCATION = 69;
 
-    public void checkAndRequestPermissions(){
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    public void checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_FINE_LOCATION);
@@ -77,26 +77,36 @@ public class TrackController extends Activity {
             checkAndRequestPermissions();
             Location lat = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            SortedMap<Long, AppModel> apps = ActiveApps.getInstance().appsRunning(this);
+            Map<Long, AppModel> apps = ActiveApps.getInstance().appsRunning(context);
             if (lat != null) {
-                AppModel entry = apps.get(apps.firstKey());
+                ArrayList<String> applicationNames = new ArrayList<>();
+                int counter = 0;
+                for (Map.Entry<Long, AppModel> entry1 : apps.entrySet()) {
+                    if (counter == 3) {
+                        break;
+                    }
+                    if (!entry1.getValue().getApplicationName().matches("SecurityPrototype|OnePlus-startprogram|Android-system" )) {
+                        applicationNames.add(entry1.getValue().getApplicationName());
+                        counter++;
+                    }
+
+                }
 
                 LatLng tempLatLng = new LatLng(lat.getLatitude(), lat.getLongitude());
                 Log.d("newTrack", "newTrack: Lat" + lat.getLatitude());
+                Log.d("newTrack", "newTrack: List of applications" + applicationNames);
                 Track track = new Track(tempLatLng);
-                String[] name = entry.getApplicationName().split(".");
-                track.setApplicationName(name[name.length-1]);
+
+                track.setApplicationName(applicationNames);
                 tempTrackArrayList.add(track);
                 saveTrackArrayToStorage();
             }
-        }catch (SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
 
         System.out.println("OK");
     }
-
-
 
 
     public void saveTrackArrayToStorage() {

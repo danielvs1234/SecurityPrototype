@@ -77,8 +77,8 @@ public class TrackViewController {
                 TextView tvLng = v.findViewById(R.id.tv_lng);
                 TextView tvDateTime = v.findViewById(R.id.tv_timeStamp);
 
-                tvLat.setText("Latitude: " + track.getLatLng().latitude);
-                tvLng.setText("Longitude: " + track.getLatLng().longitude);
+
+                tvLat.setText("Possible Trackers: \n" + "* " + track.getApplicationName().get(0) + "\n" + "* " +track.getApplicationName().get(1) + "\n" + "* " + track.getApplicationName().get(2));
 
                 tvDateTime.setText("Date: " + track.getDate() + "\n" + "Time: " + track.getTime());
                 Log.d("date", "getInfoContents: date format = " + track.getDate());

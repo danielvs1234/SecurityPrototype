@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -58,8 +59,8 @@ public class ActiveApps {
      *
      * @return a list of running apps which has certain permissions.
      */
-    public SortedMap<Long, AppModel> appsRunning(Context context) {
-        SortedMap<Long, AppModel> appList = new TreeMap<>();
+    public Map<Long, AppModel> appsRunning(Context context) {
+        Map<Long, AppModel> appList = new TreeMap<>(Collections.reverseOrder());
 
         //Get applications used sorted by time since used
         SortedMap<Long, String> list = getUsedApplicationsInTimeperiod(context, 1000*86400);
@@ -115,7 +116,7 @@ public class ActiveApps {
                 final PackageManager pm = context.getPackageManager();
                 ApplicationInfo ai;
                 try {
-                    ai = pm.getApplicationInfo( context.getPackageName(), 0);
+                    ai = pm.getApplicationInfo( packageName, 0);
                 } catch (final PackageManager.NameNotFoundException e) {
                     ai = null;
                 }

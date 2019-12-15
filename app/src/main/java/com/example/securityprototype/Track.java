@@ -5,14 +5,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class Track implements Serializable {
 
     private LatLng latLng;
     private Timestamp timestamp;
-    private String applicationName;
+    private ArrayList<String> applicationName;
 
 
     public Track(){
@@ -58,11 +60,11 @@ public class Track implements Serializable {
         return formatter.format(this.timestamp);
     }
 
-    public String getApplicationName(){
+    public ArrayList<String> getApplicationName(){
         return applicationName;
     }
 
-    public void setApplicationName(String applicationName){
+    public void setApplicationName(ArrayList<String> applicationName){
         this.applicationName = applicationName;
     }
 
