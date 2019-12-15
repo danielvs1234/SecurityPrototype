@@ -3,6 +3,7 @@ package com.example.securityprototype;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     private Button decryptButton;
     private Button deleteButton;
+    private Button goToMapButton;
     private TextView textView;
 //    private EditText inputField;
 //    private IStorage storageHandler;
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.saveButton);
         decryptButton =  findViewById(R.id.decryptButton);
         deleteButton = findViewById(R.id.deleteButton);
+        goToMapButton = findViewById(R.id.goToMapsButton);
+
         textView = findViewById(R.id.textView1);
         textView.setMovementMethod(new ScrollingMovementMethod());
 //        inputField = findViewById(R.id.textField1);
@@ -99,6 +103,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getApplicationContext().deleteFile("map.dat");
+            }
+        });
+
+        goToMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MapsActivity.class));
             }
         });
 

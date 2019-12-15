@@ -45,8 +45,12 @@ public class TrackController {
 
 
     public void newTrack() {
-        Track newTrack = new Track(latLngTestList.get(1));
+        Track newTrack = new Track(latLngTestList.get(0));
+        Track newTrack1 = new Track(latLngTestList.get(1));
+        Track newTrack2 = new Track(latLngTestList.get(2));
         tempTrackArrayList.add(newTrack);
+        tempTrackArrayList.add(newTrack1);
+        tempTrackArrayList.add(newTrack2);
 
     }
 
