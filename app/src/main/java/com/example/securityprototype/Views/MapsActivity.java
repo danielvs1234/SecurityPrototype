@@ -1,7 +1,5 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Views;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -15,25 +13,22 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 
+import com.example.securityprototype.Controllers.TrackViewController;
+import com.example.securityprototype.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, DatePickerDialog.OnDateSetListener {
 
@@ -96,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         handleLocationChanged();
 
         trackViewController = new TrackViewController(mMap, getApplicationContext());
-        trackViewController.setMarkersForEachTrack(null);
+        trackViewController.setMarkers(null);
 
 
     }
@@ -118,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String date = "" + dayOfMonth + "/" + monthplus1 + "/" + year;
         Log.d("date", "onDateSet: Date format = " + date);
         mMap.clear();
-        trackViewController.setMarkersForEachTrack(date);
+        trackViewController.setMarkers(date);
     }
 
 
@@ -143,7 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onStarted() {
                 Log.d("onStarted", "onStarted: Main nåede hertil ");
 
-                trackViewController.newTrack();
+                trackViewController.gpsUpdateOccured();
                 super.onStarted();
             }
 
@@ -158,5 +153,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch(SecurityException e){
             e.printStackTrace();
         }
+        if (!isAccessGranted()) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+    }
+
+    private boolean isAccessGranted() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+            int mode = 0;
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
+                mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                        applicationInfo.uid, applicationInfo.packageName);
+            }
+
+            return (mode == AppOpsManager.MODE_ALLOWED);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+
+        super.onDestroy();
     }
 }

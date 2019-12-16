@@ -1,4 +1,4 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Views;
 
 import android.app.AppOpsManager;
 import android.content.Context;
@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.securityprototype.R;
+import com.example.securityprototype.Model.Track;
+import com.example.securityprototype.Model.TrackController;
 
 import java.util.ArrayList;
 
@@ -105,5 +109,4 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
-
 }

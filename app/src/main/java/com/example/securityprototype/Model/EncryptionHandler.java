@@ -1,8 +1,9 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Model;
 
 import android.util.Log;
 
-import java.io.File;
+import com.example.securityprototype.Interfaces.IEncryption;
+
 import java.security.SecureRandom;
 import java.util.HashMap;
 
@@ -21,6 +22,7 @@ public class EncryptionHandler implements IEncryption {
     }
 
 
+    @Override
     public HashMap<String, byte[]> encryptBytes(byte[] plainTextBytes) {
         HashMap<String, byte[]> map = new HashMap<String, byte[]>();
 
@@ -60,6 +62,7 @@ public class EncryptionHandler implements IEncryption {
         return map;
     }
 
+    @Override
     public byte[] decryptData(HashMap<String, byte[]> map)
     {
         byte[] decryptedData = null;

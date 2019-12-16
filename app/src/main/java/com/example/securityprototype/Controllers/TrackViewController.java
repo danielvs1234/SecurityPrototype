@@ -1,27 +1,34 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Controllers;
 
+import android.app.AppOpsManager;
 import android.content.Context;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.securityprototype.Interfaces.ITrackViewController;
+import com.example.securityprototype.R;
+import com.example.securityprototype.Model.Track;
+import com.example.securityprototype.Model.TrackController;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 
-public class TrackViewController {
+public class TrackViewController implements ITrackViewController {
 
-    GoogleMap mMap;
-    TrackController trackController;
-    Context context;
+    private GoogleMap mMap;
+    private TrackController trackController;
+    private Context context;
 
     public TrackViewController(GoogleMap mMap, Context context) {
         this.mMap = mMap;
@@ -30,30 +37,21 @@ public class TrackViewController {
 
     }
 
-    public void newTrack(){
+    @Override
+    public void gpsUpdateOccured(){
         trackController.newTrack();
     }
 
-    public void setMarkersForEachTrack(String optionalDate){
+    public void setMarkers() {
 
 
         ArrayList<Track> trackList = trackController.loadTrackArrayListFromStorage();
         ArrayList<Marker> markerList = new ArrayList<>();
-        ArrayList<Track> dateTrackList = new ArrayList<>();
 
-        if(optionalDate != null){
-            for (Track track : trackList){
-                if(track.getDate().equals(optionalDate)){
-                    dateTrackList.add(track);
-                }
-            }
-            trackList = dateTrackList;
-        }
-
-        for (Track track : trackList){
-           Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-           marker.setTag(track);
-           markerList.add(marker);
+        for (Track track : trackList) {
+            Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            marker.setTag(track);
+            markerList.add(marker);
         }
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -71,14 +69,11 @@ public class TrackViewController {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 View v = inflater.inflate(R.layout.windowlayout, null);
 
-                LatLng latLng = track.getLatLng();
-
                 TextView tvLat = v.findViewById(R.id.tv_lat);
-                TextView tvLng = v.findViewById(R.id.tv_lng);
                 TextView tvDateTime = v.findViewById(R.id.tv_timeStamp);
 
 
-                tvLat.setText("Possible Trackers: \n" + "* " + track.getApplicationName().get(0) + "\n" + "* " +track.getApplicationName().get(1) + "\n" + "* " + track.getApplicationName().get(2));
+                tvLat.setText("Possible Trackers: \n" + "* " + track.getApplicationName().get(0) + "\n" + "* " + track.getApplicationName().get(1) + "\n" + "* " + track.getApplicationName().get(2));
 
                 tvDateTime.setText("Date: " + track.getDate() + "\n" + "Time: " + track.getTime());
                 Log.d("date", "getInfoContents: date format = " + track.getDate());
@@ -104,6 +99,4 @@ public class TrackViewController {
 
         });
     }
-
-
 }

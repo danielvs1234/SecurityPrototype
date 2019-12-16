@@ -1,4 +1,4 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Model;
 
 import com.google.gson.Gson;
 

@@ -1,21 +1,22 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Model;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.example.securityprototype.Interfaces.IStorage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 public class StorageHandler implements IStorage {
 
-    Context context;
+    private Context context;
 
     public StorageHandler(Context context){
         this.context = context;

@@ -1,23 +1,19 @@
-package com.example.securityprototype;
+package com.example.securityprototype.Model;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AppOpsManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.provider.Settings;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.securityprototype.Model.ActiveApps;
-import com.example.securityprototype.Model.AppModel;
+import com.example.securityprototype.Factories.RunningAppsFactory;
+import com.example.securityprototype.Interfaces.IEncryption;
+import com.example.securityprototype.Interfaces.IStorage;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayInputStream;
@@ -25,11 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
 
 public class TrackController extends Activity {
 
@@ -70,14 +64,19 @@ public class TrackController extends Activity {
         }
     }
 
-    public void newTrack() {
+    public void newTrack(String date) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         try {
             checkAndRequestPermissions();
             Location lat = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            Map<Long, AppModel> apps = ActiveApps.getInstance().appsRunning(context);
+            Long msAgo = 86400L;
+
+            if(date != null){
+                msAgo = Long.parseLong(date);
+            }
+            Map<Long, AppModel> apps = RunningAppsFactory.getInstance().getRunningApps(context, msAgo);
             if (lat != null) {
                 ArrayList<String> applicationNames = new ArrayList<>();
                 int counter = 0;

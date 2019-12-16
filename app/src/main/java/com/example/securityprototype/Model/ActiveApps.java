@@ -8,6 +8,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.example.securityprototype.Interfaces.IRunningApps;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,12 +17,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class ActiveApps {
-    private static final ActiveApps ourInstance = new ActiveApps();
+public class ActiveApps implements IRunningApps {
 
-    public static ActiveApps getInstance() {
-        return ourInstance;
-    }
+    private static ActiveApps instance = null;
+
 
     private static String[] positionPermissions = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -34,7 +34,7 @@ public class ActiveApps {
             Manifest.permission.INSTALL_LOCATION_PROVIDER
     };
 
-    private ActiveApps() {
+    public ActiveApps() {
     }
 
     /**
@@ -43,7 +43,7 @@ public class ActiveApps {
      * @param msAgo
      * @return
      */
-    private SortedMap<Long, String> getUsedApplicationsInTimeperiod(Context context, int msAgo) {
+    private Map<Long, String> getUsedApplicationsInTimeperiod(Context context, int msAgo) {
         SortedMap<Long, String> mySortedMap = new TreeMap<>();
         UsageStatsManager usm = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
         long time = System.currentTimeMillis();
@@ -59,11 +59,11 @@ public class ActiveApps {
      *
      * @return a list of running apps which has certain permissions.
      */
-    public Map<Long, AppModel> appsRunning(Context context) {
+    public Map<Long, AppModel> getRunningApps(Context context, int msAgo) {
         Map<Long, AppModel> appList = new TreeMap<>(Collections.reverseOrder());
 
         //Get applications used sorted by time since used
-        SortedMap<Long, String> list = getUsedApplicationsInTimeperiod(context, 1000*86400);
+        Map<Long, String> list = getUsedApplicationsInTimeperiod(context, 1000*msAgo);
         for (Map.Entry<Long, String> entry : list.entrySet()) {
             AppModel app = checkAndGetAppWithPermissions(context, entry.getValue(), positionPermissions);
             if(app != null){
