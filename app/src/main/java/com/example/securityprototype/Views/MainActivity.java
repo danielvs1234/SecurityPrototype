@@ -15,11 +15,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.securityprototype.Controllers.TrackViewController;
+import com.example.securityprototype.Interfaces.ITrackViewController;
 import com.example.securityprototype.R;
 import com.example.securityprototype.Model.Track;
 import com.example.securityprototype.Model.TrackController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button goToMapButton;
     private TextView textView;
     private LocationManager lm;
-    private TrackController trackController;
+    private ITrackViewController trackController;
 
 
     @Override
@@ -45,19 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textView1);
         textView.setMovementMethod(new ScrollingMovementMethod());
-        trackController = new TrackController(getApplicationContext());
+        trackController = new TrackViewController();
 
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                trackController.newTrack();
-                trackController.newTrack();
-                trackController.newTrack();
                 trackController.saveTrackArrayToStorage();
-
-
             }
         });
 
@@ -65,10 +62,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //  decryptTextFromHashMapAndShowIt();
-                ArrayList<Track> tracks = trackController.loadTrackArrayListFromStorage();
-                textView.append("Track 1: " + "Latlng: " + tracks.get(0).getDateAndTime());
-                textView.append("Track 2: " + "Latlng: " + tracks.get(1).getDateAndTime());
-                textView.append("Track 3: " + "Latlng: " + tracks.get(2).getDateAndTime());
+                List<Track> tracks = trackController.loadTrackArrayListFromStorage();
+
+                for(int i = 0; i < 3;i++){
+                    int tmp = i+1;
+                    textView.append("Track "+ tmp +": " + "Latlng: " + tracks.get(i).getDateAndTime());
+                }
 
             }
         });
@@ -98,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             PackageManager packageManager = getPackageManager();
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
             AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+
             int mode = 0;
             if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.KITKAT) {
                 mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,

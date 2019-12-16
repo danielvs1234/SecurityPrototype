@@ -1,13 +1,14 @@
 package com.example.securityprototype.Interfaces;
 
-import android.content.Context;
+import com.example.securityprototype.Model.Track;
 
-import com.google.android.gms.maps.GoogleMap;
+import java.util.List;
 
 public interface ITrackViewController {
 
-    void gpsUpdateOccured();
-    void setMarkers();
-    void setMarkers(String date);
+    void gpsUpdateOccured(String date);
+    void setMarkers(Long date);
+    void saveTrackArrayToStorage();
+    List<Track> loadTrackArrayListFromStorage();
 
 }

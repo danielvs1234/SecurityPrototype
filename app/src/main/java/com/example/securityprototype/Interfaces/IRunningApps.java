@@ -8,6 +8,6 @@ import java.util.Map;
 
 public interface IRunningApps {
 
-    Map<Long, AppModel> getRunningApps(Context context);
+    Map<Long, AppModel> getRunningApps(Context context, Long msAgo);
 
 }

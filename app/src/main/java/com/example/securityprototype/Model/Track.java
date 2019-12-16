@@ -47,17 +47,21 @@ public class Track implements Serializable {
 
     public String getDateAndTime(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YY;HH:mm");
-        return formatter.format(this.timestamp);
+        return formatter.format(timestamp);
     }
 
     public String getDate(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY");
-        return formatter.format(this.timestamp);
+        return formatter.format(timestamp);
 
     }
     public String getTime(){
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        return formatter.format(this.timestamp);
+        return formatter.format(timestamp);
+    }
+
+    public Long getTimeSinceTrackInMillis(){
+        return timestamp.getTime();
     }
 
     public ArrayList<String> getApplicationName(){

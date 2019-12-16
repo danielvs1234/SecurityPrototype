@@ -43,7 +43,8 @@ public class ActiveApps implements IRunningApps {
      * @param msAgo
      * @return
      */
-    private Map<Long, String> getUsedApplicationsInTimeperiod(Context context, int msAgo) {
+
+    private Map<Long, String> getUsedApplicationsInTimeperiod(Context context, Long msAgo) {
         SortedMap<Long, String> mySortedMap = new TreeMap<>();
         UsageStatsManager usm = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
         long time = System.currentTimeMillis();
@@ -59,7 +60,7 @@ public class ActiveApps implements IRunningApps {
      *
      * @return a list of running apps which has certain permissions.
      */
-    public Map<Long, AppModel> getRunningApps(Context context, int msAgo) {
+    public Map<Long, AppModel> getRunningApps(Context context, Long msAgo) {
         Map<Long, AppModel> appList = new TreeMap<>(Collections.reverseOrder());
 
         //Get applications used sorted by time since used

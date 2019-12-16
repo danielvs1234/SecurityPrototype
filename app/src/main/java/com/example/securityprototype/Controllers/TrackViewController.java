@@ -1,20 +1,15 @@
 package com.example.securityprototype.Controllers;
 
-import android.app.AppOpsManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.securityprototype.Interfaces.ITrackViewController;
-import com.example.securityprototype.R;
 import com.example.securityprototype.Model.Track;
 import com.example.securityprototype.Model.TrackController;
+import com.example.securityprototype.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -22,6 +17,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class TrackViewController implements ITrackViewController {
@@ -38,12 +34,11 @@ public class TrackViewController implements ITrackViewController {
     }
 
     @Override
-    public void gpsUpdateOccured(){
-        trackController.newTrack();
+    public void gpsUpdateOccured(String date){
+        trackController.newTrack(date);
     }
 
-    public void setMarkers() {
-
+    public void setMarkers(Long date) {
 
         ArrayList<Track> trackList = trackController.loadTrackArrayListFromStorage();
         ArrayList<Marker> markerList = new ArrayList<>();
@@ -52,6 +47,14 @@ public class TrackViewController implements ITrackViewController {
             Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
             marker.setTag(track);
             markerList.add(marker);
+            System.out.println("is marker visible" + marker.isVisible());
+
+            if(track.getTimeSinceTrackInMillis() < date){
+                marker.setVisible(false);
+            }else{
+                marker.setVisible(true);
+            }
+
         }
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -98,5 +101,13 @@ public class TrackViewController implements ITrackViewController {
             }
 
         });
+    }
+
+    public void saveTrackArrayToStorage(){
+        trackController.saveTrackArrayToStorage();
+    }
+
+    public List<Track> loadTrackArrayListFromStorage(){
+        return trackController.loadTrackArrayListFromStorage();
     }
 }

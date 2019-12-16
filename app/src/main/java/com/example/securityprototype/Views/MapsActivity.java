@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 
 import com.example.securityprototype.Controllers.TrackViewController;
+import com.example.securityprototype.Interfaces.IStorage;
+import com.example.securityprototype.Interfaces.ITrackViewController;
 import com.example.securityprototype.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +30,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, DatePickerDialog.OnDateSetListener {
 
@@ -36,8 +44,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button backButton;
     private Button dateButton;
     private LocationManager lm;
+    private String selectedDate;
 
-    private TrackViewController trackViewController;
+    private ITrackViewController trackViewController;
 
 
     @Override
@@ -92,8 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         trackViewController = new TrackViewController(mMap, getApplicationContext());
         trackViewController.setMarkers(null);
-
-
     }
 
     private void showDatePickerDialog(){
@@ -109,11 +116,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        int monthplus1 = month+1;
-        String date = "" + dayOfMonth + "/" + monthplus1 + "/" + year;
-        Log.d("date", "onDateSet: Date format = " + date);
-        mMap.clear();
-        trackViewController.setMarkers(date);
+
+        String dateString = dayOfMonth + "/" + month+1 + "/" + year;
+        Log.d("date", "onDateSet: Date format = " + dateString);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
+        try {
+            Date date = simpleDateFormat.parse(dateString);
+            Long timeInMillis = date.getTime();
+            trackViewController.setMarkers(timeInMillis);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -138,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onStarted() {
                 Log.d("onStarted", "onStarted: Main nåede hertil ");
 
-                trackViewController.gpsUpdateOccured();
+                trackViewController.gpsUpdateOccured(selectedDate);
                 super.onStarted();
             }
 
@@ -147,6 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 super.onStopped();
             }
         };
+
         try{
             checkAndRequestPermissions();
             lm.registerGnssStatusCallback(gnssListener);
@@ -179,7 +193,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onDestroy(){
-
+        trackViewController.saveTrackArrayToStorage();
         super.onDestroy();
     }
 }

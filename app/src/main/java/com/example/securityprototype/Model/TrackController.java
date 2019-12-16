@@ -2,10 +2,14 @@ package com.example.securityprototype.Model;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.BatteryManager;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -33,6 +37,7 @@ public class TrackController extends Activity {
 
     private ArrayList<LatLng> latLngTestList;
     private ArrayList<Track> tempTrackArrayList;
+    private BatteryManager batteryManager;
 
     public TrackController(Context context) {
 
@@ -52,6 +57,7 @@ public class TrackController extends Activity {
         latLngTestList.add(latLng2);
         latLngTestList.add(latLng3);
         latLngTestList.add(latLng4);
+        batteryManager = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
     }
 
     private int MY_PERMISSIONS_FINE_LOCATION = 69;
@@ -98,7 +104,10 @@ public class TrackController extends Activity {
 
                 track.setApplicationName(applicationNames);
                 tempTrackArrayList.add(track);
-                saveTrackArrayToStorage();
+
+                if(batteryManager.isCharging()){
+                    saveTrackArrayToStorage();
+                }
             }
         } catch (SecurityException e) {
             e.printStackTrace();
