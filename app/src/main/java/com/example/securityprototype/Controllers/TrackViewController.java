@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.example.securityprototype.Interfaces.ITrackViewController;
 import com.example.securityprototype.Model.Track;
-import com.example.securityprototype.Model.TrackController;
+import com.example.securityprototype.Model.TrackHandler;
 import com.example.securityprototype.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,12 +23,12 @@ import java.util.List;
 public class TrackViewController implements ITrackViewController {
 
     private GoogleMap mMap;
-    private TrackController trackController;
+    private TrackHandler trackController;
     private Context context;
 
     public TrackViewController(GoogleMap mMap, Context context) {
         this.mMap = mMap;
-        trackController = new TrackController(context);
+        trackController = new TrackHandler(context);
         this.context = context;
 
     }

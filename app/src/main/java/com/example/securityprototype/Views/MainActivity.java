@@ -15,13 +15,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.securityprototype.Controllers.TrackViewController;
-import com.example.securityprototype.Interfaces.ITrackViewController;
-import com.example.securityprototype.R;
+import com.example.securityprototype.Controllers.MainActivityViewController;
+import com.example.securityprototype.Interfaces.IMainActivityViewController;
 import com.example.securityprototype.Model.Track;
-import com.example.securityprototype.Model.TrackController;
+import com.example.securityprototype.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Button deleteButton;
     private Button goToMapButton;
     private TextView textView;
-    private LocationManager lm;
-    private ITrackViewController trackController;
+    private IMainActivityViewController mainActivityViewController;
 
 
     @Override
@@ -48,13 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textView1);
         textView.setMovementMethod(new ScrollingMovementMethod());
-        trackController = new TrackViewController();
+        mainActivityViewController = new MainActivityViewController(this);
 
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trackController.saveTrackArrayToStorage();
+                mainActivityViewController.saveTrackArrayToStorage();
             }
         });
 
@@ -62,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //  decryptTextFromHashMapAndShowIt();
-                List<Track> tracks = trackController.loadTrackArrayListFromStorage();
+                List<Track> tracks = mainActivityViewController.loadTrackArrayListFromStorage();
 
                 for(int i = 0; i < 3;i++){
                     int tmp = i+1;

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TrackController extends Activity {
+public class TrackHandler extends Activity {
 
     private IStorage storageHandler;
     private IEncryption encryptionHandler;
@@ -39,7 +39,7 @@ public class TrackController extends Activity {
     private ArrayList<Track> tempTrackArrayList;
     private BatteryManager batteryManager;
 
-    public TrackController(Context context) {
+    public TrackHandler(Context context) {
 
         this.context = context;
         storageHandler = new StorageHandler(context);
