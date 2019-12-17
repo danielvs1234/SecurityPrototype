@@ -45,6 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button dateButton;
     private LocationManager lm;
     private String selectedDate;
+    private Long selectedDateInMillis;
 
     private ITrackViewController trackViewController;
 
@@ -122,8 +123,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
         try {
             Date date = simpleDateFormat.parse(dateString);
-            Long timeInMillis = date.getTime();
-            trackViewController.setMarkers(timeInMillis);
+            selectedDateInMillis = date.getTime();
+            trackViewController.setMarkers(selectedDateInMillis);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -152,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("onStarted", "onStarted: Main nåede hertil ");
 
                 trackViewController.gpsUpdateOccured(selectedDate);
+                trackViewController.setMarkers(selectedDateInMillis);
                 super.onStarted();
             }
 
@@ -191,9 +193,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
+    /*
+    * Method runs when the application is put in the background
+    * Saving here
+     */
+    @Override
+    public void onStop() {
+        trackViewController.saveTrackArrayToStorage();
+        Log.d("mapsActivity.onStop", "onStopMethod ran");
+        super.onStop();
+    }
+
+    /*
+    * Method only partially runs when the app is destroyed, due to system killing this activity
+    *
+     */
     @Override
     public void onDestroy(){
-        trackViewController.saveTrackArrayToStorage();
         super.onDestroy();
     }
 }

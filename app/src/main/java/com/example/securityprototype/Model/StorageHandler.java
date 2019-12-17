@@ -8,6 +8,7 @@ import com.example.securityprototype.Interfaces.IStorage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -36,8 +37,9 @@ public class StorageHandler implements IStorage {
             os.writeObject(map);
             os.close();
             fileOutputStream.close();
+            Log.d("saveStorage", "write, method successful");
 
-        }catch(Exception e){
+        }catch(IOException e){
             Log.d("Save to Storage", "saveMapToStorage: Method failed ");
             e.printStackTrace();
         }
@@ -49,16 +51,20 @@ public class StorageHandler implements IStorage {
 
         Map<String, byte[]> map;
         try {
+
             FileInputStream fis = context.openFileInput("map.dat");
             ObjectInputStream input = new ObjectInputStream(fis);
             map = (Map<String, byte[]> ) input.readObject();
             input.close();
             fis.close();
 
-
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log.d("Read from Storage", "getMapFromStorage: Method failed");
             e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            Log.d("storage.Read", "could not find target class");
             return null;
         }
 

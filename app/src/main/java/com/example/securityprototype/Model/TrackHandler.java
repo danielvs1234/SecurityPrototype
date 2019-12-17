@@ -45,18 +45,8 @@ public class TrackHandler extends Activity {
         storageHandler = new StorageHandler(context);
         encryptionHandler = new EncryptionHandler();
 
-        latLngTestList = new ArrayList<>();
         tempTrackArrayList = new ArrayList<>();
 
-        LatLng latLng1 = new LatLng(48.458352, 2.377730);
-        LatLng latLng2 = new LatLng(52.321911, 13.271296);
-        LatLng latLng3 = new LatLng(55.329144, 10.319999);
-        LatLng latLng4 = new LatLng(51.454007, -0.222162);
-
-        latLngTestList.add(latLng1);
-        latLngTestList.add(latLng2);
-        latLngTestList.add(latLng3);
-        latLngTestList.add(latLng4);
         batteryManager = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
     }
 
@@ -90,7 +80,7 @@ public class TrackHandler extends Activity {
                     if (counter == 3) {
                         break;
                     }
-                    if (!entry1.getValue().getApplicationName().matches("SecurityPrototype|OnePlus-startprogram|Android-system" )) {
+                    if (!entry1.getValue().getApplicationName().matches("SecurityPrototype|OnePlus-startprogram|Android-system|Indstillinger" )) {
                         applicationNames.add(entry1.getValue().getApplicationName());
                         counter++;
                     }

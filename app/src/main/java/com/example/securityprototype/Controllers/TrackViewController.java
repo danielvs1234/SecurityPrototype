@@ -23,25 +23,28 @@ import java.util.List;
 public class TrackViewController implements ITrackViewController {
 
     private GoogleMap mMap;
-    private TrackHandler trackController;
+    private TrackHandler trackHandler;
     private Context context;
 
     public TrackViewController(GoogleMap mMap, Context context) {
         this.mMap = mMap;
-        trackController = new TrackHandler(context);
+        trackHandler = new TrackHandler(context);
         this.context = context;
 
     }
 
     @Override
     public void gpsUpdateOccured(String date){
-        trackController.newTrack(date);
+        trackHandler.newTrack(date);
     }
 
     public void setMarkers(Long date) {
 
-        ArrayList<Track> trackList = trackController.loadTrackArrayListFromStorage();
+        ArrayList<Track> trackList = trackHandler.loadTrackArrayListFromStorage();
         ArrayList<Marker> markerList = new ArrayList<>();
+
+        if(trackList.size() == 0)
+            return;
 
         for (Track track : trackList) {
             Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
@@ -49,6 +52,8 @@ public class TrackViewController implements ITrackViewController {
             markerList.add(marker);
             System.out.println("is marker visible" + marker.isVisible());
 
+            if(date == null)
+                date = 86400L;
             if(track.getTimeSinceTrackInMillis() < date){
                 marker.setVisible(false);
             }else{
@@ -104,10 +109,10 @@ public class TrackViewController implements ITrackViewController {
     }
 
     public void saveTrackArrayToStorage(){
-        trackController.saveTrackArrayToStorage();
+        trackHandler.saveTrackArrayToStorage();
     }
 
     public List<Track> loadTrackArrayListFromStorage(){
-        return trackController.loadTrackArrayListFromStorage();
+        return trackHandler.loadTrackArrayListFromStorage();
     }
 }
