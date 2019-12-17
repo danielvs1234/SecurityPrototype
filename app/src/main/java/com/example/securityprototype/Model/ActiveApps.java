@@ -18,20 +18,12 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class ActiveApps implements IRunningApps {
-
-    private static ActiveApps instance = null;
-
-
     private static String[] positionPermissions = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
-            Manifest.permission.ACCESS_MEDIA_LOCATION,
-            Manifest.permission.CONTROL_LOCATION_UPDATES,
-            Manifest.permission.LOCATION_HARDWARE,
-            Manifest.permission.INSTALL_LOCATION_PROVIDER,
-            Manifest.permission.INSTALL_LOCATION_PROVIDER
+            Manifest.permission.CONTROL_LOCATION_UPDATES
     };
 
     public ActiveApps() {
@@ -43,7 +35,6 @@ public class ActiveApps implements IRunningApps {
      * @param msAgo
      * @return
      */
-
     private Map<Long, String> getUsedApplicationsInTimeperiod(Context context, Long msAgo) {
         SortedMap<Long, String> mySortedMap = new TreeMap<>();
         UsageStatsManager usm = (UsageStatsManager)context.getSystemService(Context.USAGE_STATS_SERVICE);
@@ -56,10 +47,8 @@ public class ActiveApps implements IRunningApps {
         }
         return mySortedMap;
     }
-    /**
-     *
-     * @return a list of running apps which has certain permissions.
-     */
+
+
     public Map<Long, AppModel> getRunningApps(Context context, Long msAgo) {
         Map<Long, AppModel> appList = new TreeMap<>(Collections.reverseOrder());
 
