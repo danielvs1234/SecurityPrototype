@@ -117,13 +117,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-        String dateString = dayOfMonth + "/" + month+1 + "/" + year;
+        int monthplus1 = month+1;
+        String dateString = dayOfMonth + "/" + monthplus1 + "/" + year;
         Log.d("date", "onDateSet: Date format = " + dateString);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
         try {
             Date date = simpleDateFormat.parse(dateString);
             selectedDateInMillis = date.getTime();
+            android.util.Log.d("date", "selectedDataInMillis = " + selectedDateInMillis);
             trackViewController.setMarkers(selectedDateInMillis);
         } catch (ParseException e) {
             e.printStackTrace();
