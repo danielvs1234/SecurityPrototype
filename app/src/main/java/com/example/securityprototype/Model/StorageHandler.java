@@ -1,7 +1,7 @@
 package com.example.securityprototype.Model;
 
 import android.content.Context;
-import android.util.Log;
+import com.example.securityprototype.Utils.Log;
 
 import com.example.securityprototype.Interfaces.IStorage;
 
@@ -26,13 +26,13 @@ public class StorageHandler implements IStorage {
 
 
     @Override
-    public void write(HashMap<String, byte[]> map, String filename) {
+    public void write(Map<String, byte[]> map, String filename) {
 
         FileOutputStream fileOutputStream;
 
         try {
 
-            fileOutputStream = this.context.openFileOutput("map.dat", Context.MODE_PRIVATE);
+            fileOutputStream = this.context.openFileOutput(filename, Context.MODE_PRIVATE);
             ObjectOutputStream os = new ObjectOutputStream(fileOutputStream);
             os.writeObject(map);
             os.close();
@@ -52,7 +52,7 @@ public class StorageHandler implements IStorage {
         Map<String, byte[]> map;
         try {
 
-            FileInputStream fis = context.openFileInput("map.dat");
+            FileInputStream fis = context.openFileInput(filename);
             ObjectInputStream input = new ObjectInputStream(fis);
             map = (Map<String, byte[]> ) input.readObject();
             input.close();

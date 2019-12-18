@@ -1,5 +1,6 @@
 package com.example.securityprototype.Views;
 
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.textView1);
         textView.setMovementMethod(new ScrollingMovementMethod());
         mainActivityViewController = new MainActivityViewController(this);
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

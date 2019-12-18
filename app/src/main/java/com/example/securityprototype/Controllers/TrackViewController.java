@@ -1,7 +1,7 @@
 package com.example.securityprototype.Controllers;
 
 import android.content.Context;
-import android.util.Log;
+import com.example.securityprototype.Utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;

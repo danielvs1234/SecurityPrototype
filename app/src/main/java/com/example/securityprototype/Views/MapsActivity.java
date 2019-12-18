@@ -15,7 +15,7 @@ import android.location.GnssStatus;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
+import com.example.securityprototype.Utils.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;

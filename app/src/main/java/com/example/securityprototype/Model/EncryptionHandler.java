@@ -1,8 +1,8 @@
 package com.example.securityprototype.Model;
 
-import android.util.Log;
 
 import com.example.securityprototype.Interfaces.IEncryption;
+import com.example.securityprototype.Utils.Log;
 
 import java.security.SecureRandom;
 import java.util.HashMap;

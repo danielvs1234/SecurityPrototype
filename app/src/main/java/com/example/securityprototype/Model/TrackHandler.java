@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.securityprototype.Factories.RunningAppsFactory;
 import com.example.securityprototype.Interfaces.IEncryption;
+import com.example.securityprototype.Interfaces.IRunningApps;
 import com.example.securityprototype.Interfaces.IStorage;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -35,11 +36,13 @@ public class TrackHandler extends Activity {
     private IEncryption encryptionHandler;
     private Context context;
 
-    private ArrayList<LatLng> latLngTestList;
     private ArrayList<Track> tempTrackArrayList;
     private BatteryManager batteryManager;
-
+    private final IRunningApps runningApps;
     public TrackHandler(Context context) {
+        this(context, RunningAppsFactory.getInstance());
+    }
+    public TrackHandler(Context context, IRunningApps runningApps) {
 
         this.context = context;
         storageHandler = new StorageHandler(context);
@@ -48,6 +51,7 @@ public class TrackHandler extends Activity {
         tempTrackArrayList = new ArrayList<>();
 
         batteryManager = (BatteryManager) context.getSystemService(BATTERY_SERVICE);
+        this.runningApps = runningApps;
     }
 
     private int MY_PERMISSIONS_FINE_LOCATION = 69;
@@ -72,7 +76,7 @@ public class TrackHandler extends Activity {
             if(date != null){
                 msAgo = Long.parseLong(date);
             }
-            Map<Long, AppModel> apps = RunningAppsFactory.getInstance().getRunningApps(context, msAgo);
+            Map<Long, AppModel> apps =  this.runningApps.getRunningApps(context, msAgo);
             if (lat != null) {
                 ArrayList<String> applicationNames = new ArrayList<>();
                 int counter = 0;
@@ -112,48 +116,36 @@ public class TrackHandler extends Activity {
         if (storageHandler.checkIfFileExists()) {
             ArrayList<Track> storedList = loadTrackArrayListFromStorage();
             storedList.addAll(tempTrackArrayList);
-
             Log.d("TrackController", "saveTrackArrayToStorage: trackListSizeBeforeSaving = " + storedList.size());
             try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream(baos);
-                for (Track element : storedList) {
-                    out.writeUTF(element.convertToJson());
-                }
-                byte[] bytes = baos.toByteArray();
-                storageHandler.write(encryptionHandler.encryptBytes(bytes), "");
-
+                byte[] bytes = getByteArrayOfTracks(storedList);
+                storageHandler.write(encryptionHandler.encryptBytes(bytes), "map.dat");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            tempTrackArrayList.clear();
         } else {
-
             try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DataOutputStream out = new DataOutputStream(baos);
-                for (Track element : tempTrackArrayList) {
-                    out.writeUTF(element.convertToJson());
-                }
-                byte[] bytes = baos.toByteArray();
-                storageHandler.write(encryptionHandler.encryptBytes(bytes), "");
-
+                byte[] bytes = getByteArrayOfTracks(tempTrackArrayList);
+                storageHandler.write(encryptionHandler.encryptBytes(bytes), "map.dat");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            tempTrackArrayList.clear();
         }
-
-
+        tempTrackArrayList.clear();
     }
-
+    public byte[] getByteArrayOfTracks(ArrayList<Track> list) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(baos);
+        for (Track element : list) {
+            out.writeUTF(element.convertToJson());
+        }
+        return baos.toByteArray();
+    }
     public ArrayList<Track> loadTrackArrayListFromStorage() {
 
         ArrayList<Track> trackList = new ArrayList<>();
 
-        byte[] readArray = encryptionHandler.decryptData((HashMap) storageHandler.read(""));
+        byte[] readArray = encryptionHandler.decryptData((HashMap) storageHandler.read("map.dat"));
         ByteArrayInputStream bais = new ByteArrayInputStream(readArray);
         DataInputStream in = new DataInputStream(bais);
 
@@ -169,6 +161,18 @@ public class TrackHandler extends Activity {
         }
         Log.d("TrackController", "loadTrackArrayListFromStorage: listSizeAfterLoading = " + trackList.size());
         return trackList;
+    }
+
+    public void setStorageHandler(IStorage storageHandler) {
+        this.storageHandler = storageHandler;
+    }
+
+    public void setEncryptionHandler(IEncryption encryptionHandler) {
+        this.encryptionHandler = encryptionHandler;
+    }
+
+    public void setTempTrackArrayList(ArrayList<Track> tempTrackArrayList) {
+        this.tempTrackArrayList = tempTrackArrayList;
     }
 
 }

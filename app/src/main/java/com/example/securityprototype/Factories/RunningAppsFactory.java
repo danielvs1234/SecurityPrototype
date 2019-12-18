@@ -11,7 +11,6 @@ public final class RunningAppsFactory {
     * Factory returning instance through singleton
     * @return IRunningApps
     */
-
     public static IRunningApps getInstance(){
         if(instance == null)
             instance = new ActiveApps();
