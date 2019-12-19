@@ -1,9 +1,5 @@
 package com.example.securityprototype.Views;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.DatePickerDialog;
@@ -15,26 +11,26 @@ import android.location.GnssStatus;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import com.example.securityprototype.Utils.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
 import com.example.securityprototype.Controllers.TrackViewController;
-import com.example.securityprototype.Interfaces.IStorage;
 import com.example.securityprototype.Interfaces.ITrackViewController;
 import com.example.securityprototype.R;
+import com.example.securityprototype.Utils.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -120,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int monthplus1 = month+1;
         String dateString = dayOfMonth + "/" + monthplus1 + "/" + year;
         Log.d("date", "onDateSet: Date format = " + dateString);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {
             Date date = simpleDateFormat.parse(dateString);
             selectedDateInMillis = date.getTime();

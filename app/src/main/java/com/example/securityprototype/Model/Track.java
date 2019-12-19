@@ -1,11 +1,9 @@
 package com.example.securityprototype.Model;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class Track implements Serializable {
     }
 
     public String getDateAndTime(){
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YY;HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YY HH:mm");
         return formatter.format(timestamp);
     }
 
@@ -61,7 +59,7 @@ public class Track implements Serializable {
     }
 
     public Long getTimeSinceTrackInMillis(){
-        return timestamp.getTime();
+        return new java.util.Date(Long.MAX_VALUE).getTime() - timestamp.getTime();
     }
 
     public ArrayList<String> getApplicationName(){

@@ -1,7 +1,6 @@
 package com.example.securityprototype.Controllers;
 
 import android.content.Context;
-import com.example.securityprototype.Utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -10,12 +9,14 @@ import com.example.securityprototype.Interfaces.ITrackViewController;
 import com.example.securityprototype.Model.Track;
 import com.example.securityprototype.Model.TrackHandler;
 import com.example.securityprototype.R;
+import com.example.securityprototype.Utils.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class TrackViewController implements ITrackViewController {
     }
 
     public void setMarkers(Long date) {
-
+        mMap.clear();
         ArrayList<Track> trackList = trackHandler.loadTrackArrayListFromStorage();
         ArrayList<Marker> markerList = new ArrayList<>();
 
@@ -47,17 +48,16 @@ public class TrackViewController implements ITrackViewController {
             return;
 
         for (Track track : trackList) {
-            Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-            marker.setTag(track);
-            markerList.add(marker);
-            System.out.println("is marker visible" + marker.isVisible());
 
             if(date == null)
-                date = 86400L;
-            if(track.getTimeSinceTrackInMillis() < date){
-                marker.setVisible(false);
-            }else{
-                marker.setVisible(true);
+                date =  new Timestamp(System.currentTimeMillis()).getTime()-86400000;
+            long trackTime = track.getTimeStamp().getTime();
+            long timediff = date-trackTime;
+
+            if(timediff < 0){
+                Marker marker = mMap.addMarker(new MarkerOptions().position(track.getLatLng()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                marker.setTag(track);
+                markerList.add(marker);
             }
 
         }

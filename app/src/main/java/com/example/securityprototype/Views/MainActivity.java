@@ -1,12 +1,10 @@
 package com.example.securityprototype.Views;
 
-import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.method.ScrollingMovementMethod;
@@ -25,61 +23,44 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    private Button button;
-    private Button decryptButton;
-    private Button deleteButton;
     private Button goToMapButton;
+    private Button deleteButton;
     private TextView textView;
     private IMainActivityViewController mainActivityViewController;
 
-
+    protected void onResume() {
+        super.onResume();
+        updateTextView();
+    }
+    protected void onStart() {
+        super.onStart();
+        updateTextView();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button = findViewById(R.id.saveButton);
-        decryptButton = findViewById(R.id.decryptButton);
-        deleteButton = findViewById(R.id.deleteButton);
         goToMapButton = findViewById(R.id.goToMapsButton);
+        deleteButton = findViewById(R.id.deleteButton);
 
         textView = findViewById(R.id.textView1);
         textView.setMovementMethod(new ScrollingMovementMethod());
         mainActivityViewController = new MainActivityViewController(this);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainActivityViewController.saveTrackArrayToStorage();
-            }
-        });
-
-        decryptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  decryptTextFromHashMapAndShowIt();
-                List<Track> tracks = mainActivityViewController.loadTrackArrayListFromStorage();
-
-                for(int i = 0; i < 3;i++){
-                    int tmp = i+1;
-                    textView.append("Track "+ tmp +": " + "Latlng: " + tracks.get(i).getDateAndTime());
-                }
-
-            }
-        });
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getApplicationContext().deleteFile("map.dat");
+                updateTextView();
             }
         });
 
         goToMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                Intent mapsIntent = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(mapsIntent);
             }
         });
 
@@ -88,7 +69,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+    private void updateTextView(){
+        List<Track> tracks = mainActivityViewController.loadTrackArrayListFromStorage();
+        textView.setText("");
+        int counter = 1;
+        for(Track track: tracks){
+            textView.append("Track "+ (counter++) +": " + "was taken " + track.getDateAndTime() + " and " + track.getLatLng().toString() +  "\n");
+        }
+        if(counter == 1){
+            textView.setText("No data to load.");
+        }
 
+    }
     private boolean isAccessGranted() {
         try {
             PackageManager packageManager = getPackageManager();

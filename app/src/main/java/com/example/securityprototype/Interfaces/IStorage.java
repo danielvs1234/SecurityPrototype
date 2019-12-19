@@ -1,6 +1,5 @@
 package com.example.securityprototype.Interfaces;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public interface IStorage {

@@ -2,10 +2,7 @@ package com.example.securityprototype.Model;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -144,8 +141,11 @@ public class TrackHandler extends Activity {
     public ArrayList<Track> loadTrackArrayListFromStorage() {
 
         ArrayList<Track> trackList = new ArrayList<>();
-
-        byte[] readArray = encryptionHandler.decryptData((HashMap) storageHandler.read("map.dat"));
+        HashMap map = (HashMap)storageHandler.read("map.dat");
+        if(map == null){
+            return trackList;
+        }
+        byte[] readArray = encryptionHandler.decryptData(map);
         ByteArrayInputStream bais = new ByteArrayInputStream(readArray);
         DataInputStream in = new DataInputStream(bais);
 

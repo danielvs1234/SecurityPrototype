@@ -1,7 +1,6 @@
 package com.example.securityprototype;
 
 import android.content.Context;
-import android.location.LocationManager;
 import android.os.BatteryManager;
 
 import com.example.securityprototype.Interfaces.IEncryption;
@@ -10,15 +9,13 @@ import com.example.securityprototype.Model.Track;
 import com.example.securityprototype.Model.TrackHandler;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.hamcrest.collection.IsIterableContainingInOrder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 

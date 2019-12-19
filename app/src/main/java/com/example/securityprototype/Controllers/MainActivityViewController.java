@@ -3,8 +3,6 @@ package com.example.securityprototype.Controllers;
 import android.content.Context;
 
 import com.example.securityprototype.Interfaces.IMainActivityViewController;
-import com.example.securityprototype.Interfaces.IStorage;
-import com.example.securityprototype.Model.StorageHandler;
 import com.example.securityprototype.Model.Track;
 import com.example.securityprototype.Model.TrackHandler;
 
