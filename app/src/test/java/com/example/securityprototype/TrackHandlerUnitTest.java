@@ -28,15 +28,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import org.hamcrest.collection.IsMapContaining;
-import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
